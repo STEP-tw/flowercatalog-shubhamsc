@@ -1,0 +1,70 @@
+body {
+  margin: 100px;
+  font-family: sans-serif;
+  font-size: 20px;
+  height: 1000px;
+}
+
+.header {
+  border-top: 1px solid black;
+  border-bottom: 2px solid black;
+  text-align: center;
+  font-size: 25px;
+  color: orange;
+}
+
+.container {
+  width: 100% auto;
+  height: auto;
+}
+
+.images {
+  margin-top: 5%;
+  float: left;
+}
+
+img {
+   width:100%;
+}
+
+#blinkImg {
+  width: 60%;
+}
+
+#freshoriginsImg {
+  width: 75%;
+}
+#links {
+  width: 20%;
+}
+#abeliophyllumImg {
+  width: 50%;
+}
+
+#ageratumImg {
+  width: 60%;
+}
+
+.contents {
+  margin-left:5%;
+  margin-top: 20%;
+  float: left;
+}
+
+#abeliophyllumContents {
+  width: 45%;
+}
+
+#ageratumContents {
+  width: 35%;
+}
+form {
+  margin: 5%;
+  font-size: 25px;
+}
+
+#submit {
+  width: 100px;
+  height: 30px;
+  font-size: 20px;
+}

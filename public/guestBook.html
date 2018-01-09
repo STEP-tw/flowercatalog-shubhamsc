@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Guest Book</title>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <script src="js/data.js" charset="utf-8"></script>
+  <script src="js/flowersCatalog.js" charset="utf-8"></script>
+</head>
+<body onload="showComments()">
+  <div class="header">
+    <p><a class="backHome" href="home.html"><<</a>Guest Book</p>
+  </div>
+  <div class="container">
+    <h3>Leave a comment</h3>
+    <form class="form" action="submitComment" method="post">
+      Name: <input type="text" name="name" required><br><br>
+      comment: <textarea type="text" name="comment" rows="4" cols="40" required></textArea><br><br>
+      <button type="submit" id="submit">Submit</button>
+    </form>
+    <div class="commentsTitles">
+      <h4>DATE TIME NAME COMMENTS</h4>
+      <div id="comments"></div>
+    </div>
+  </div>
+</body>
+</html>
