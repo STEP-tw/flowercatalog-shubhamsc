@@ -91,7 +91,7 @@ const postLogin = function (req, res) {
     return;
   }
   let sessionId = new Date().getTime();
-  res.setHeader('Set-Cookie', `sessionId=${sessionId}`);
+  res.setHeader('Set-Cookie', [`sessionId=${sessionId}`,`userName=${user.userName}`]);
   user.sessionId = sessionId;
   res.redirect('/guestBook.html');
 };
@@ -130,6 +130,7 @@ const showContents = function(req,res,data){
 
 const displayPage = function (req, res) {
   if(req.url=='/login') return;
+  if(req.url=='/guestBook.html') return;
   fs.readFile(`./public${req.url}`, (err, data) => {
     if (err){
     res.pageNotFound();
@@ -143,12 +144,27 @@ const ignorePage = function (req, res) {
   res.end();
 };
 
+const serveGuestBook = function(req,res){
+  let userName = req.cookie.userName || '';
+  res.statusCode = 200;
+  res.setHeader('content-type', 'text/html');
+  fs.readFile('./public/guestBook.html', 'utf8', (err, data) => {
+    if (err) console.log(err);
+    if(userName) 
+    userName = `Hello: ${userName}`;
+    data = data.replace(/USER_NAME/,userName);
+    res.write(data);
+    res.end();
+  });
+};
+
 app.use(logRequest);
 app.use(loadUser);
 app.use(loginUserSendToGuestBook);
 app.use(logoutUserSendToLogin);
 app.get('/',sendToHome);
 app.get('/fevicon.ico',ignorePage);
+app.get('/guestBook.html',serveGuestBook);
 app.get('/login', getLogin);
 app.post('/login', postLogin);
 app.post('/submitComment',addComment);
