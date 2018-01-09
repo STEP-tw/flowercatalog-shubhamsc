@@ -49,7 +49,7 @@ const sendToHome = function(req,res){
 };
 
 const loginUserSendToGuestBook = function (req, res) {
-  if (['/submitComment','/login'].includes(req.url) && req.user)
+  if (['/login'].includes(req.url) && req.user)
     res.redirect('/guestBook.html');
 };
 
@@ -140,7 +140,7 @@ const ignorePage = function (req, res) {
 
 app.use(logRequest);
 app.use(loadUser);
-// app.use(loginUserSendToGuestBook);
+app.use(loginUserSendToGuestBook);
 app.use(logoutUserSendToLogin);
 app.get('/',sendToHome);
 app.get('/fevicon.ico',ignorePage);
