@@ -45,12 +45,12 @@ const loadUser = function (req, res) {
 };
 
 const sendToHome = function(req,res){
-  res.redirect('/home.html');
+  req.url = '/home.html';
 };
 
 const loginUserSendToGuestBook = function (req, res) {
   if (req.url=='/login' && req.user)
-    res.redirect('/guestBook.html');
+    res.redirect('/guestBook');
 };
 
 const logoutUserSendToLogin = function (req, res) {
@@ -64,7 +64,8 @@ const getLogin = function (req, res) {
   res.statusCode = 200;
   res.setHeader('content-type', 'text/html');
   if (error)
-  res.setHeader('Set-Cookie', [`error=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`])
+  res.setHeader('Set-Cookie', [`error=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`,
+  `userName=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`])
   fs.readFile('./public/login.html', 'utf8', (err, data) => {
     if (err) console.log(err);
     data = data.replace(/LOGIN_ERROR/, error);
@@ -93,18 +94,20 @@ const postLogin = function (req, res) {
   let sessionId = new Date().getTime();
   res.setHeader('Set-Cookie', [`sessionId=${sessionId}`,`userName=${user.userName}`]);
   user.sessionId = sessionId;
-  res.redirect('/guestBook.html');
+  res.redirect('/guestBook');
 };
 
 const getLogout = function (req, res) {
-  res.setHeader('Set-Cookie', [`sessionId=0; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`])
+  res.setHeader('Set-Cookie', [`sessionId=0; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`,
+  `userName=''; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`]);
   res.redirect('/')
 };
 
 const addComment = function(req,res){
     let comment = req.body;
+    comment.name = req.cookie.userName;
     commentHandler.writeComments(comment);
-    res.redirect('/guestBook.html');
+    res.redirect('/guestBook');
 };
 
 const getTypes = function(extn){
@@ -130,12 +133,9 @@ const showContents = function(req,res,data){
 
 const displayPage = function (req, res) {
   if(req.url=='/login') return;
-  if(req.url=='/guestBook.html') return;
+  if(req.url=='/guestBook') return;
   fs.readFile(`./public${req.url}`, (err, data) => {
-    if (err){
-    res.pageNotFound();
-    return;
-    } 
+    if (err) return res.pageNotFound();
     showContents(req,res,data);
   });
 };
@@ -146,13 +146,16 @@ const ignorePage = function (req, res) {
 
 const serveGuestBook = function(req,res){
   let userName = req.cookie.userName || '';
+  if(!userName){
+    req.url = '/viewComments.html';
+    return ;
+  } 
   res.statusCode = 200;
   res.setHeader('content-type', 'text/html');
   fs.readFile('./public/guestBook.html', 'utf8', (err, data) => {
     if (err) console.log(err);
-    if(userName) 
-    userName = `Hello: ${userName}`;
-    data = data.replace(/USER_NAME/,userName);
+    data = data.replace(/user_name/,userName);
+    data = data.replace(/USER_NAME/,`Welcome: ${userName}`);
     res.write(data);
     res.end();
   });
@@ -161,12 +164,12 @@ const serveGuestBook = function(req,res){
 app.use(logRequest);
 app.use(loadUser);
 app.use(loginUserSendToGuestBook);
-app.use(logoutUserSendToLogin);
+// app.use(logoutUserSendToLogin);
 app.get('/',sendToHome);
 app.get('/fevicon.ico',ignorePage);
-app.get('/guestBook.html',serveGuestBook);
 app.get('/login', getLogin);
 app.post('/login', postLogin);
+app.get('/guestBook',serveGuestBook);
 app.post('/submitComment',addComment);
 app.get('/logout', getLogout);
 app.postServe(displayPage);
