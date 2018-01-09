@@ -63,9 +63,8 @@ const getLogin = function (req, res) {
   let error = req.cookie.error || '';
   res.statusCode = 200;
   res.setHeader('content-type', 'text/html');
-  if (error) {
-    res.setHeader('Set-Cookie', [`error=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`])
-  }
+  if (error)
+  res.setHeader('Set-Cookie', [`error=; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`])
   fs.readFile('./public/login.html', 'utf8', (err, data) => {
     if (err) console.log(err);
     data = data.replace(/LOGIN_ERROR/, error);
@@ -74,13 +73,21 @@ const getLogin = function (req, res) {
   });
 };
 
-const postLogin = function (req, res) {
-  let user = registeredUsers.find(function (regUser) {
+const getValidUser = function(req,res){
+  return registeredUsers.find(function (regUser) {
     return regUser.userName == req.body.name && regUser.password == req.body.password;
   });
+};
+
+const showLoginFailed = function(res){
+  res.setHeader('Set-Cookie', `error=Invalid user or password`);
+  res.redirect('/login');
+};
+
+const postLogin = function (req, res) {
+  let user = getValidUser(req,res);
   if (!user) {
-    res.setHeader('Set-Cookie', `error=Invalid user or password`);
-    res.redirect('/login');
+    showLoginFailed(res);
     return;
   }
   let sessionId = new Date().getTime();
