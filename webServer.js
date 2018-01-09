@@ -1,10 +1,11 @@
 const http = require('http');
+const fs = require('fs');
 const webApp = require('./webApp.js');
+const logRequest = require('./logRequest').logRequest;
 const commentHandler = require('./commentHandler.js');
 commentHandler.readComments();
-const fs = require('fs');
-const qs = require('querystring');
 const PORT = 8888;
+
 const registeredUsers = [{
   userName: 'shubham',
   password: 1234
@@ -15,26 +16,6 @@ const registeredUsers = [{
 
 
 let app = webApp();
-
-const timeStamp = () => {
-  let date = new Date();
-  return `${date.toDateString()} ${date.toLocaleTimeString()}`;
-};
-
-const getToString = function (data) {
-  return JSON.stringify(data, null, 2);
-};
-
-const logRequest = function (req, res) {
-  let text = ['------------------------------',
-    `${timeStamp()}`,
-    `${req.method} ${req.url}`,
-    `HEADERS: ${getToString(req.headers)}`,
-    `COOKIES: ${getToString(req.cookies)}`,
-    `BODY: ${getToString(req.body)}`, ''
-  ].join('\n');
-  fs.appendFile('request.log', text, () => {});
-};
 
 const loadUser = function (req, res) {
   let sessionId = req.cookie.sessionId;
