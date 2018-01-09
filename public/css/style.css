@@ -63,8 +63,12 @@ form {
   font-size: 25px;
 }
 
-#submit {
+button {
   width: 100px;
   height: 30px;
   font-size: 20px;
+}
+
+a {
+text-decoration: none;
 }

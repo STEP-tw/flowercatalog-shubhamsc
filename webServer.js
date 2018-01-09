@@ -95,12 +95,9 @@ const getLogout = function (req, res) {
 };
 
 const addComment = function(req,res){
-  // req.on('data',(data)=>{
-    // let comment = qs.parse(data.toString());
     let comment = req.body;
     commentHandler.writeComments(comment);
     res.redirect('/guestBook.html');
-  // });
 };
 
 const getTypes = function(extn){
