@@ -54,7 +54,7 @@ const loginUserSendToGuestBook = function (req, res) {
 };
 
 const logoutUserSendToLogin = function (req, res) {
-  if (['/submitComment','login'].includes(req.url) && !req.user){
+  if (['/guestBook','login'].includes(req.url) && !req.user){
     res.redirect('/login');
   }
 };
@@ -144,21 +144,40 @@ const ignorePage = function (req, res) {
   res.end();
 };
 
-const serveGuestBook = function(req,res){
-  let userName = req.cookie.userName || '';
-  if(!userName){
-    req.url = '/viewComments.html';
-    return ;
-  } 
+const viewCommnetsOnly = function(req,res){
+  let comments = commentHandler.getUserComments();  
+  res.statusCode = 200;
+  res.setHeader('content-type', 'text/html');
+  fs.readFile('./public/viewComments.html', 'utf8', (err, data) => {
+    if (err) console.log(err);
+    data = data.replace(/USERCOMMENTS/,comments);
+    res.write(data);
+    res.end();
+  });
+};
+
+
+const showAddNewComments = function(req,res,userName){
+  let comments = commentHandler.getUserComments();    
   res.statusCode = 200;
   res.setHeader('content-type', 'text/html');
   fs.readFile('./public/guestBook.html', 'utf8', (err, data) => {
     if (err) console.log(err);
     data = data.replace(/user_name/,userName);
     data = data.replace(/USER_NAME/,`Welcome: ${userName}`);
+    data = data.replace(/USERCOMMENTS/,comments);    
     res.write(data);
     res.end();
   });
+};
+
+const serveGuestBook = function(req,res){
+  let userName = req.cookie.userName || '';
+  if(userName){
+    showAddNewComments(req,res,userName);
+    return ;
+  } 
+  viewCommnetsOnly(req,res);
 };
 
 app.use(logRequest);

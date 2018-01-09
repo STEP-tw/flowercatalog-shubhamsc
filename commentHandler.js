@@ -32,5 +32,13 @@ const writeComments = function(comment){
   fs.writeFile('./public/js/data.js',"var data = "+JSON.stringify(commentsInfo),(err)=>{if(err)console.log(err)});
 };
 
+const getUserComments = function(){
+  let data = comments.getComments();
+  return data.map(function(comment){
+    return `<br>${comment.date} At ${comment.time}<br><strong>${comment.name}</strong><br>${comment.comment}`;
+  }).join('<br>------------------------------<br>');
+};
+
+exports.getUserComments = getUserComments;
 exports.readComments = readComments;
 exports.writeComments = writeComments;
