@@ -5,3 +5,6 @@ runAllTests.sh
 test/
 templates/
 request.log
+data/
+package.json
+.gitignore

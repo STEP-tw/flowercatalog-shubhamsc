@@ -13,3 +13,5 @@ let getComments = function(){
 let showComments = function(){
   document.getElementById('comments').innerHTML = getComments();
 };
+
+window.onload = showComments;

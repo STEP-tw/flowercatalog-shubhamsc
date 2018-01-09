@@ -49,7 +49,7 @@ const sendToHome = function(req,res){
 };
 
 const loginUserSendToGuestBook = function (req, res) {
-  if (['/login'].includes(req.url) && req.user)
+  if (req.url=='/login' && req.user)
     res.redirect('/guestBook.html');
 };
 
@@ -125,9 +125,7 @@ const displayPage = function (req, res) {
   if(req.url=='/login') return;
   fs.readFile(`./public${req.url}`, (err, data) => {
     if (err){
-    res.statusCode = 404;
-    res.write('File Not Found !');
-    res.end();
+    res.pageNotFound();
     return;
     } 
     showContents(req,res,data);
